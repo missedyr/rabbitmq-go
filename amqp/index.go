@@ -13,8 +13,8 @@ var mqChan *amqp.Channel
 
 // RabbitMQ 定义RabbitMQ对象
 type RabbitMQ struct {
-	connectConf RabbitMQConnectConf
-	queueConf   RabbitMQQueueExchange // 队列配置
+	connectConf ConnectConf
+	queueConf   QueueExchange // 队列配置
 	connection  *amqp.Connection
 	channel     *amqp.Channel
 	mu          sync.RWMutex
@@ -22,7 +22,7 @@ type RabbitMQ struct {
 }
 
 // New 创建一个新的操作对象
-func New(connect RabbitMQConnectConf, queueConf RabbitMQQueueExchange) *RabbitMQ {
+func New(connect ConnectConf, queueConf QueueExchange) *RabbitMQ {
 	if queueConf.ExchangeType == "" {
 		queueConf.ExchangeType = ExchangeTopic
 	}
