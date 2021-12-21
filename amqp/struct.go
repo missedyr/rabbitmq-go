@@ -19,8 +19,8 @@ type RabbitMQQueueExchange struct {
 type RabbitMQConnectConf struct {
 	InstanceId string // 实例ID  (实例ID存在时 自动使用阿里云AMQP用户名密码转译)
 	Endpoint   string // Endpoint配置 或ip
-	AccessKey  string
-	SecretKey  string
+	AccessKey  string // 用户名 或 阿里云AMQP-AccessKey
+	SecretKey  string // 密码   或 阿里云AMQP-SecretKey
 	Vhost      string
 	Port       int64  // 端口号 非必须
 }

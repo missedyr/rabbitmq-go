@@ -19,9 +19,12 @@ func test() {
 		RoutingKey:   "miss-topic",
 		QueueName:    "miss-xin",
 	}
-	mq := rabbitmqGo.New(connect, exConf)
-	mq.Producer("miss-test")
-	mq.Consumer(doFunc)
+
+	// 发送
+	rabbitmqGo.New(connect, exConf).Producer("miss-test")
+
+	// 消费
+	rabbitmqGo.New(connect, exConf).Consumer(doFunc)
 }
 
 func doFunc(msg string) error {

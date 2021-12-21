@@ -33,7 +33,7 @@ func New(connect RabbitMQConnectConf, queueConf RabbitMQQueueExchange) *RabbitMQ
 }
 
 // 链接rabbitMQ
-func (r *RabbitMQ) mqConnect() {
+func (r *RabbitMQ) mqConnect() error {
 	var err error
 	r.GetRabbitUrl()
 	mqConn, err = amqp.Dial(r.rabbitUrl)
@@ -46,10 +46,11 @@ func (r *RabbitMQ) mqConnect() {
 	if err != nil {
 		fmt.Printf("RabbitMQ管道失败:%s \n", err)
 	}
+	return err
 }
 
 // 关闭RabbitMQ连接
-func (r *RabbitMQ) mqClose() {
+func (r *RabbitMQ) mqClose() error {
 	// 先关闭管道,再关闭链接
 	err := r.channel.Close()
 	if err != nil {
@@ -59,13 +60,24 @@ func (r *RabbitMQ) mqClose() {
 	if err != nil {
 		fmt.Printf("RabbitMQ链接关闭失败:%s \n", err)
 	}
+	return err
 }
 
 // Producer 发送任务 送指定队列指定路由的生产者
-func (r *RabbitMQ) Producer(msg string) {
+func (r *RabbitMQ) Producer(msg string) error {
+	var err error
+	// 处理结束关闭链接
+	defer r.mqClose()
+	if err != nil {
+		return err
+	}
+
 	// 验证链接是否正常,否则重新链接
 	if r.channel == nil {
-		r.mqConnect()
+		err = r.mqConnect()
+		if err != nil {
+			return err
+		}
 	}
 
 	// 注册交换机
@@ -76,10 +88,10 @@ func (r *RabbitMQ) Producer(msg string) {
 	// internal:是否为内部
 	// noWait:是否非阻塞, true为是,不等待RMQ返回信息;
 	// args:参数,传nil即可;
-	err := r.channel.ExchangeDeclare(r.queueConf.ExchangeName, r.queueConf.ExchangeType, true, false, false, false, nil)
+	err = r.channel.ExchangeDeclare(r.queueConf.ExchangeName, r.queueConf.ExchangeType, true, false, false, false, nil)
 	if err != nil {
 		fmt.Printf("RabbitMQ注册交换机失败:%s \n", err)
-		return
+		return err
 	}
 
 	// 发送任务消息
@@ -89,15 +101,17 @@ func (r *RabbitMQ) Producer(msg string) {
 	})
 	if err != nil {
 		fmt.Printf("RabbitMQ消息发送失败:%s \n", err)
-		return
+		return err
 	}
 	fmt.Printf("RabbitMQ-Producer-消息发送成功\n")
+	return err
 }
 
 // Consumer 接收任务消费消息 接收指定队列指定路由的数据接收者
 func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 	// 处理结束关闭链接
 	defer r.mqClose()
+
 	// 验证链接是否正常
 	if r.channel == nil {
 		r.mqConnect()
@@ -150,7 +164,7 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 	for msg := range msgList {
 		// 处理数据
 		err := doFunc(string(msg.Body))
-		fmt.Printf("RabbitMQ--Consume--doFunc监听消息执行结果:%s \n", err)
+		fmt.Printf("RabbitMQ--Consume--doFunc监听消息执行结果 err:%s \n", err)
 		if err != nil {
 			err = msg.Ack(true)
 			if err != nil {
