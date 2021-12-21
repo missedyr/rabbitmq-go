@@ -8,7 +8,7 @@ go get github.com/xuexin520/rabbitmq-go
 ### 使用
 
 ```go
-connectConf := rabbitmqGo.RabbitMQConnectConf{
+connectConf := rabbitmqGo.ConnectConf{
     InstanceId: "", // 实例ID (实例ID存在 自动使用阿里云AMQP用户名密码转译)
     Endpoint:   "", // Endpoint配置 或ip
     Port:       0,  // 端口号 非必须
@@ -16,7 +16,7 @@ connectConf := rabbitmqGo.RabbitMQConnectConf{
     SecretKey:  "", // 密码   或 阿里云AMQP-SecretKey
     Vhost:      "",
 }
-queueConf := rabbitmqGo.RabbitMQQueueExchange{
+queueConf := rabbitmqGo.QueueExchange{
     ExchangeName: "", // 交换机名称 (生产者和消费者 必须)
     RoutingKey:   "", // 路由key值 (生产者和消费者 必须) 注 支持通配符的场景
     QueueName:    "", // 队列名称 (生产者非必须  消费者必须）

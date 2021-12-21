@@ -6,7 +6,7 @@ import (
 )
 
 func test() {
-	connect := rabbitmqGo.RabbitMQConnectConf{
+	connect := rabbitmqGo.ConnectConf{
 		InstanceId: "",
 		Endpoint:   "",
 		Port:       0,
@@ -14,7 +14,7 @@ func test() {
 		SecretKey:  "",
 		Vhost:      "",
 	}
-	exConf := rabbitmqGo.RabbitMQQueueExchange{
+	exConf := rabbitmqGo.QueueExchange{
 		ExchangeName: "miss",
 		RoutingKey:   "miss-topic",
 		QueueName:    "miss-xin",
