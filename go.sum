@@ -1,0 +1,4 @@
+github.com/AliwareMQ/amqp-demos v0.0.0-20201117094205-fb70599a1ca8 h1:AdtG8uW7MdIupn17awS8tXd2H42pZ+cd4GSJStuudYA=
+github.com/AliwareMQ/amqp-demos v0.0.0-20201117094205-fb70599a1ca8/go.mod h1:zjOmqGWOHXMESan/7AhZkAnOQBA5IPExg8FdafM7Vfs=
+github.com/streadway/amqp v1.0.0 h1:kuuDrUJFZL1QYL9hUNuCxNObNzB0bV/ZG5jV3RWAQgo=
+github.com/streadway/amqp v1.0.0/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=
