@@ -24,9 +24,16 @@ go get github.com/xuexin520/rabbitmq-go
 	}
 	mq := rabbitmqGo.New(connect, queueConf)
 	
-	// 发送消息
+	// 发送消息 (发送string)
 	mq.Producer("miss-test")
 	
-	// 接收消息
-	mq.Consumer(run)
+	// 接收消息 (传入自定义的消费消息的处理方法)
+	mq.Consumer(doFunc)
+```
+
+```go
+func doFunc(msg string) error {
+	fmt.Println("Consumer消费信息--", msg)
+	return nil
+}
 ```

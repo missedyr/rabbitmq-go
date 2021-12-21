@@ -21,10 +21,10 @@ func test() {
 	}
 	mq := rabbitmqGo.New(connect, exConf)
 	mq.Producer("miss-test")
-	mq.Consumer(run)
+	mq.Consumer(doFunc)
 }
 
-func run(msg string) error {
+func doFunc(msg string) error {
 	fmt.Println("Consumer消费信息--", msg)
 	return nil
 }
