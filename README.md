@@ -17,7 +17,7 @@ go get github.com/xuexin520/rabbitmq-go
 		Vhost:      "", 
 	}
 	queueConf := rabbitmqGo.RabbitMQQueueExchange{
-                ExchangeType: "", // 交换机类型 默认topic
+                ExchangeType: "", // 交换机类型 (非必须 默认topic模式) 
 		ExchangeName: "", // 交换机名称 (生产者和消费者 必须)
 		RoutingKey:   "", // 路由key值 (生产者和消费者 必须) 注 支持通配符的场景
 		QueueName:    "", // 队列名称 (生产者非必须  消费者必须）
