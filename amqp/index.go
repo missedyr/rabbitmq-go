@@ -2,7 +2,6 @@ package rabbitmqGo
 
 import (
 	"fmt"
-	"github.com/AliwareMQ/amqp-demos/amqp-go-utils/utils"
 	"github.com/streadway/amqp"
 	"sync"
 )
@@ -185,11 +184,13 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 
 func (r *RabbitMQ) GetRabbitUrl() {
 	//rabbitUrl := fmt.Sprintf("amqp://%s:%s@%s:%d/", "guest", "guest", "******", 5673)
+	userName := r.connectConf.AccessKey
+	password := r.connectConf.SecretKey
 	if r.connectConf.InstanceId != "" { // 实例ID存在  默认转化阿里云AMQP 用户名密码转译
-		r.connectConf.AccessKey = utils.GetUserName(r.connectConf.AccessKey, r.connectConf.InstanceId)
-		r.connectConf.SecretKey = utils.GetPassword(r.connectConf.SecretKey)
+		userName = GetUserName(r.connectConf.AccessKey, r.connectConf.InstanceId)
+		password = GetPassword(r.connectConf.SecretKey)
 	}
-	r.rabbitUrl = fmt.Sprintf("amqp://%s:%s@%s", r.connectConf.AccessKey, r.connectConf.SecretKey, r.connectConf.Endpoint)
+	r.rabbitUrl = fmt.Sprintf("amqp://%s:%s@%s", userName, password, r.connectConf.Endpoint)
 	if r.connectConf.Port != 0 {
 		r.rabbitUrl = fmt.Sprintf(`%s:%d`, r.rabbitUrl, r.connectConf.Port)
 	}
