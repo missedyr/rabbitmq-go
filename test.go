@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/xuexin520/rabbitmq-go/amqp"
+	rabbitmqGo "github.com/missedyr/rabbitmq-go/amqp"
 )
 
 func test() {
