@@ -3,7 +3,7 @@ rabbitmq精简使用包--go版本
 
 ### 安装
 
-go get github.com/xuexin520/rabbitmq-go
+go get github.com/missedyr/rabbitmq-go
 
 ### 使用
 
