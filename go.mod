@@ -1,4 +1,4 @@
-module github.com/xuexin520/rabbitmq-go
+module github.com/missedyr/rabbitmq-go
 
 go 1.14
 
