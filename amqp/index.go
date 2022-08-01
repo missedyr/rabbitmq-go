@@ -48,8 +48,8 @@ func (r *RabbitMQ) mqConnect() error {
 	return err
 }
 
-// 关闭RabbitMQ连接
-func (r *RabbitMQ) mqClose() error {
+// MqClose 关闭RabbitMQ连接
+func (r *RabbitMQ) MqClose() error {
 	// 先关闭管道,再关闭链接
 	err := r.channel.Close()
 	if err != nil {
@@ -66,7 +66,7 @@ func (r *RabbitMQ) mqClose() error {
 func (r *RabbitMQ) Producer(msg string) error {
 	var err error
 	// 处理结束关闭链接
-	defer r.mqClose()
+	defer r.MqClose()
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func (r *RabbitMQ) Producer(msg string) error {
 // Consumer 接收任务消费消息 接收指定队列指定路由的数据接收者
 func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 	// 处理结束关闭链接
-	defer r.mqClose()
+	//defer r.MqClose()
 
 	// 验证链接是否正常
 	if r.channel == nil {
