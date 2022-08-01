@@ -31,8 +31,8 @@ func New(connect ConnectConf, queueConf QueueExchange) *RabbitMQ {
 	}
 }
 
-// 链接rabbitMQ
-func (r *RabbitMQ) mqConnect() error {
+// MqConnect 链接rabbitMQ
+func (r *RabbitMQ) MqConnect() (*RabbitMQ, error) {
 	var err error
 	r.GetRabbitUrl()
 	mqConn, err = amqp.Dial(r.rabbitUrl)
@@ -45,7 +45,7 @@ func (r *RabbitMQ) mqConnect() error {
 	if err != nil {
 		fmt.Printf("RabbitMQ管道失败:%s \n", err)
 	}
-	return err
+	return r, err
 }
 
 // MqClose 关闭RabbitMQ连接
@@ -73,7 +73,7 @@ func (r *RabbitMQ) Producer(msg string) error {
 
 	// 验证链接是否正常,否则重新链接
 	if r.channel == nil {
-		err = r.mqConnect()
+		_, err = r.MqConnect()
 		if err != nil {
 			return err
 		}
@@ -113,7 +113,7 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 
 	// 验证链接是否正常
 	if r.channel == nil {
-		r.mqConnect()
+		r.MqConnect()
 	}
 
 	// 注册交换机
@@ -160,26 +160,26 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 	}
 
 	// 处理数据
-	for msg := range msgList {
-		// 处理数据
-		err := doFunc(string(msg.Body))
-		fmt.Printf("RabbitMQ--Consume--doFunc监听消息执行结果 err:%s \n", err)
-		if err != nil {
-			err = msg.Ack(true)
+	go func() {
+		for msg := range msgList {
+			// 处理数据
+			err := doFunc(string(msg.Body))
+			fmt.Printf("RabbitMQ--Consume--doFunc监听消息执行结果 err:%s \n", err)
 			if err != nil {
-				fmt.Printf("确认消息未完成异常:%s \n", err)
-				return
+				err = msg.Ack(true)
+				if err != nil {
+					fmt.Printf("确认消息未完成异常:%s \n", err)
+				}
+			} else {
+				// 确认消息,必须为false
+				err = msg.Ack(false)
+				if err != nil {
+					fmt.Printf("确认消息完成异常:%s \n", err)
+				}
 			}
-		} else {
-			// 确认消息,必须为false
-			err = msg.Ack(false)
-			if err != nil {
-				fmt.Printf("确认消息完成异常:%s \n", err)
-				return
-			}
-			return
 		}
-	}
+	}()
+	return
 }
 
 func (r *RabbitMQ) GetRabbitUrl() {
