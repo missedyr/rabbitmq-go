@@ -50,14 +50,19 @@ func (r *RabbitMQ) MqConnect() (*RabbitMQ, error) {
 
 // MqClose 关闭RabbitMQ连接
 func (r *RabbitMQ) MqClose() error {
+	var err error
 	// 先关闭管道,再关闭链接
-	err := r.channel.Close()
-	if err != nil {
-		fmt.Printf("RabbitMQ管道关闭失败:%s \n", err)
+	if r.channel != nil {
+		err = r.channel.Close()
+		if err != nil {
+			fmt.Printf("RabbitMQ管道关闭失败:%s \n", err)
+		}
 	}
-	err = r.connection.Close()
-	if err != nil {
-		fmt.Printf("RabbitMQ链接关闭失败:%s \n", err)
+	if r.connection != nil {
+		err = r.connection.Close()
+		if err != nil {
+			fmt.Printf("RabbitMQ链接关闭失败:%s \n", err)
+		}
 	}
 	return err
 }
