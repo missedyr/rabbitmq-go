@@ -7,7 +7,9 @@ go get github.com/missedyr/rabbitmq-go
 
 ### 使用
 
+#### 连接信息
 ```go
+
 connectConf := rabbitmqGo.ConnectConf{
     Endpoint:   "", // Endpoint配置 或ip
     UserName:   "", // 用户名 		非必需 (注* 用户名密码登录时为 必须)
@@ -18,12 +20,18 @@ connectConf := rabbitmqGo.ConnectConf{
     Vhost:      "", // 非必需 默认值 default
     Port:       0   // 端口号 非必须
 }
+```
+#### 生产者信息
+```go
 producerRoutingConf := rabbitmqGo.ProducerRoutingConf{
     ExchangeType: "", // 交换机类型 (非必须 默认topic模式)
     ExchangeName: "", // 交换机名称 必须
     RoutingKey:   "", // 路由key值 必须 注*支持通配符的场景
 }
+```
 
+#### 消费者信息
+```go
 consumerQueueConf := rabbitmqGo.ConsumerQueueConf{
     ConsumerTag:  "",   // 标签	非必须
     ExchangeType: "",   // 交换机类型 (非必须 默认topic模式)
@@ -36,7 +44,7 @@ consumerQueueConf := rabbitmqGo.ConsumerQueueConf{
 
 ### 发送消息 (发送string)
 ```go
-rabbitmqGo.New(connectConf, queueConf).Producer("miss-test")
+rabbitmqGo.NewProducer(connectConf, producerRoutingConf).Producer("miss-test")
 ```
 
 ### 接收消息 (传入自定义的消费消息的处理方法)
@@ -46,5 +54,5 @@ func doFunc(msg string) error {
     return nil
 }
 
-rabbitmqGo.New(connectConf, queueConf).Consumer(doFunc)
+rabbitmqGo.NewConsumer(connect, consumerQueueConf).Consumer(doFunc)
 ```
