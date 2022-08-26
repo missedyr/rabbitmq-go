@@ -30,9 +30,11 @@ var exCsmConf = rabbitmqGo.ConsumerQueueConf{
 
 func test() {
 	// 发送
-	rabbitmqGo.NewProducer(connect, exPrdConf).Producer("miss-test---222")
-	go runTime()
-	go runTime()
+	msg := map[string]interface{}{
+		"Id":   5,
+		"Name": "test--miss",
+	}
+	rabbitmqGo.NewProducer(connect, exPrdConf).Producer(msg)
 	go runTime()
 
 	// 消费
