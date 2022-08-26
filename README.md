@@ -18,11 +18,19 @@ connectConf := rabbitmqGo.ConnectConf{
     Vhost:      "", // 非必需 默认值 default
     Port:       0   // 端口号 非必须
 }
-queueConf := rabbitmqGo.QueueExchange{
-    ExchangeName: "", // 交换机名称 (生产者和消费者 必须)
-    RoutingKey:   "", // 路由key值 (生产者和消费者 必须) 注 支持通配符的场景
-    QueueName:    "", // 队列名称 (生产者非必须  消费者必须）
+producerRoutingConf := rabbitmqGo.ProducerRoutingConf{
     ExchangeType: "", // 交换机类型 (非必须 默认topic模式)
+    ExchangeName: "", // 交换机名称 必须
+    RoutingKey:   "", // 路由key值 必须 注*支持通配符的场景
+}
+
+consumerQueueConf := rabbitmqGo.ConsumerQueueConf{
+    ConsumerTag:  "",   // 标签	非必须
+    ExchangeType: "",   // 交换机类型 (非必须 默认topic模式)
+    ExchangeName: "",   // 交换机名称 必须
+    RoutingKey:   "",   // 路由key值 必须 注*支持通配符的场景
+    QueueName:    "",   // 队列名称  必须
+    Requeue:      true, // 是否重排任务 Nack->requeue
 }
 ```
 

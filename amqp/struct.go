@@ -1,19 +1,13 @@
 package rabbitmqGo
 
-const (
-	ExchangeDirect  = "direct"
-	ExchangeFanout  = "fanout"
-	ExchangeTopic   = "topic"
-	ExchangeHeaders = "headers"
-)
+type ExchangeType string
 
-// QueueExchange 定义队列交换机对象
-type QueueExchange struct {
-	ExchangeType string // 交换机类型 默认topic
-	ExchangeName string // 交换机名称 (生产者和消费者 必须)
-	RoutingKey   string // 路由key值 (生产者和消费者 必须)  注 支持通配符的场景
-	QueueName    string // 队列名称 (生产者非必须  消费者必须）
-}
+const (
+	ExchangeDirect  ExchangeType = "direct"
+	ExchangeFanout  ExchangeType = "fanout"
+	ExchangeTopic   ExchangeType = "topic"
+	ExchangeHeaders ExchangeType = "headers"
+)
 
 // ConnectConf mq链接信息
 type ConnectConf struct {
@@ -25,4 +19,21 @@ type ConnectConf struct {
 	SecretKey  string // SecretKey	非必需 (注* key和密钥登录时为 必须)
 	Vhost      string // 非必需 默认值 default
 	Port       int64  // 端口号 非必须
+}
+
+// ProducerRoutingConf 生产者配置
+type ProducerRoutingConf struct {
+	ExchangeType ExchangeType // 交换机类型 默认topic
+	ExchangeName string       // 交换机名称 必须
+	RoutingKey   string       // 路由key值 必须  注 支持通配符的场景
+}
+
+// ConsumerQueueConf 消费者配置
+type ConsumerQueueConf struct {
+	ConsumerTag  string       // 标签	非必须
+	ExchangeType ExchangeType // 交换机类型 默认topic
+	ExchangeName string       // 交换机名称 必须
+	RoutingKey   string       // 路由key值 必须  注 支持通配符的场景
+	QueueName    string       // 队列名称  必须
+	Requeue      bool         // 是否重排任务 Nack->requeue
 }
