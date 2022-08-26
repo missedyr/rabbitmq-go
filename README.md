@@ -9,12 +9,14 @@ go get github.com/missedyr/rabbitmq-go
 
 ```go
 connectConf := rabbitmqGo.ConnectConf{
-    InstanceId: "", // 实例ID (实例ID存在 自动使用阿里云AMQP用户名密码转译)
     Endpoint:   "", // Endpoint配置 或ip
-    Port:       0,  // 端口号 非必须
-    AccessKey:  "", // 用户名 或 阿里云AMQP-AccessKey
-    SecretKey:  "", // 密码   或 阿里云AMQP-SecretKey
-    Vhost:      "",
+    UserName:   "", // 用户名 		非必需 (注* 用户名密码登录时为 必须)
+    Password:   "", // 密码 		非必需 (注* 用户名密码登录时为 必须)
+    InstanceId: "", // 实例ID 		非必需 (注* key和密钥登录时为 必须)
+    AccessKey:  "", // AccessKey	非必需 (注* key和密钥登录时为 必须)
+    SecretKey:  "", // SecretKey	非必需 (注* key和密钥登录时为 必须)
+    Vhost:      "", // 非必需 默认值 default
+    Port:       0   // 端口号 非必须
 }
 queueConf := rabbitmqGo.QueueExchange{
     ExchangeName: "", // 交换机名称 (生产者和消费者 必须)

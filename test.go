@@ -7,23 +7,25 @@ import (
 )
 
 var connect = rabbitmqGo.ConnectConf{
-	InstanceId: "",
 	Endpoint:   "",
-	Port:       0,
+	UserName:   "",
+	Password:   "",
+	InstanceId: "",
 	AccessKey:  "",
 	SecretKey:  "",
 	Vhost:      "",
+	Port:       0,
 }
+
 var exConf = rabbitmqGo.QueueExchange{
-	ExchangeName: "miss",
-	RoutingKey:   "miss-topic",
-	QueueName:    "miss-xin",
+	ExchangeName: "test-debug",
+	RoutingKey:   "debug-topic",
+	QueueName:    "debug-xin",
 }
 
 func test() {
 
 	// 发送
-	rabbitmqGo.New(connect, exConf).Producer("miss-test")
 	rabbitmqGo.New(connect, exConf).Producer("miss-test---11111")
 	go runTime()
 
@@ -31,7 +33,7 @@ func test() {
 	rabbitmqGo.New(connect, exConf).Consumer(doFunc)
 
 	fmt.Println("9999999999--")
-	time.Sleep(1 * time.Minute)
+	time.Sleep(10 * time.Minute)
 }
 
 func doFunc(msg string) error {
@@ -40,7 +42,7 @@ func doFunc(msg string) error {
 }
 
 func runTime() {
-	C := time.Tick(5 * time.Second)
+	C := time.Tick(1 * time.Second)
 	for range C {
 		msg := fmt.Sprintf(`miss-test--%d`, time.Now().UnixMilli())
 		rabbitmqGo.New(connect, exConf).Producer(msg)

@@ -39,6 +39,7 @@ func (r *RabbitMQ) MqConnect() (*RabbitMQ, error) {
 	r.connection = mqConn // 赋值给RabbitMQ对象
 	if err != nil {
 		fmt.Printf("RabbitMQ链接失败url:%s ---- err:%s \n", r.rabbitUrl, err)
+		return r, err
 	}
 	mqChan, err = mqConn.Channel()
 	r.channel = mqChan // 赋值给RabbitMQ对象
@@ -113,12 +114,12 @@ func (r *RabbitMQ) Producer(msg string) error {
 
 // Consumer 接收任务消费消息 接收指定队列指定路由的数据接收者
 func (r *RabbitMQ) Consumer(doFunc func(string) error) {
-	// 处理结束关闭链接
-	//defer r.MqClose()
-
-	// 验证链接是否正常
+	// 验证链接是否正常,否则重新链接
 	if r.channel == nil {
-		r.MqConnect()
+		_, err := r.MqConnect()
+		if err != nil {
+			return
+		}
 	}
 
 	// 注册交换机
@@ -189,19 +190,25 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 
 func (r *RabbitMQ) GetRabbitUrl() {
 	//rabbitUrl := fmt.Sprintf("amqp://%s:%s@%s:%d/", "guest", "guest", "******", 5673)
-	userName := r.connectConf.AccessKey
-	password := r.connectConf.SecretKey
-	if r.connectConf.InstanceId != "" { // 实例ID存在  默认转化阿里云AMQP 用户名密码转译
+	userName := r.connectConf.UserName
+	password := r.connectConf.Password
+	if len(userName) == 0 || len(password) == 0 {
 		userName = GetUserName(r.connectConf.AccessKey, r.connectConf.InstanceId)
 		password = GetPassword(r.connectConf.SecretKey)
+		if len(userName) == 0 || len(password) == 0 {
+			fmt.Printf("RabbitMQ--GetRabbitUrl--使用AccessKey和SecretKey动态获取用户名密码失败 \n")
+			return
+		}
 	}
+	fmt.Printf("RabbitMQ--GetRabbitUrl--使用AccessKey和SecretKey动态获取用户名 %s 密码 %s \n", userName, password)
 	r.rabbitUrl = fmt.Sprintf("amqp://%s:%s@%s", userName, password, r.connectConf.Endpoint)
 	if r.connectConf.Port != 0 {
 		r.rabbitUrl = fmt.Sprintf(`%s:%d`, r.rabbitUrl, r.connectConf.Port)
 	}
 	if r.connectConf.Vhost != "" {
-		r.rabbitUrl = fmt.Sprintf(`%s/%s`, r.rabbitUrl, r.connectConf.Vhost)
+		r.connectConf.Vhost = "default"
 	}
 
+	r.rabbitUrl = fmt.Sprintf(`%s/%s`, r.rabbitUrl, r.connectConf.Vhost)
 	r.rabbitUrl += "?heartbeat=5"
 }
