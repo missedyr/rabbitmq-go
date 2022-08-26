@@ -17,11 +17,12 @@ type QueueExchange struct {
 
 // ConnectConf mq链接信息
 type ConnectConf struct {
-	InstanceId string // 实例ID  (实例ID存在时 自动使用阿里云AMQP用户名密码转译)
 	Endpoint   string // Endpoint配置 或ip
-	AccessKey  string // 用户名 或 阿里云AMQP-AccessKey
-	SecretKey  string // 密码   或 阿里云AMQP-SecretKey
-	Vhost      string
+	UserName   string // 用户名 		非必需 (注* 用户名密码登录时为 必须)
+	Password   string // 密码 		非必需 (注* 用户名密码登录时为 必须)
+	InstanceId string // 实例ID 		非必需 (注* key和密钥登录时为 必须)
+	AccessKey  string // AccessKey	非必需 (注* key和密钥登录时为 必须)
+	SecretKey  string // SecretKey	非必需 (注* key和密钥登录时为 必须)
+	Vhost      string // 非必需 默认值 default
 	Port       int64  // 端口号 非必须
 }
-
