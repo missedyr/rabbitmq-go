@@ -1,6 +1,7 @@
 package rabbitmqGo
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
 	"sync"
@@ -84,7 +85,7 @@ func (r *RabbitMQ) MqClose() error {
 }
 
 // Producer 发送任务 送指定队列指定路由的生产者
-func (r *RabbitMQ) Producer(msg string) error {
+func (r *RabbitMQ) Producer(msg interface{}) error {
 	var err error
 	// 处理结束关闭链接
 	defer r.MqClose()
@@ -115,9 +116,10 @@ func (r *RabbitMQ) Producer(msg string) error {
 	}
 
 	// 发送任务消息
+	msgByte, _ := json.Marshal(msg)
 	err = r.Channel.Publish(r.ProducerRoutingConf.ExchangeName, r.ProducerRoutingConf.RoutingKey, false, false, amqp.Publishing{
 		ContentType: "text/plain",
-		Body:        []byte(msg),
+		Body:        msgByte,
 	})
 	if err != nil {
 		fmt.Printf("RabbitMQ消息发送失败:%s \n", err)
