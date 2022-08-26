@@ -36,6 +36,16 @@ func New(connect ConnectConf, producerRoutingConf ProducerRoutingConf, consumerQ
 	}
 }
 
+// NewProducer 创建一个新的生产者对象
+func NewProducer(connect ConnectConf, producerRoutingConf ProducerRoutingConf) *RabbitMQ {
+	return New(connect, producerRoutingConf, ConsumerQueueConf{})
+}
+
+// NewConsumer 创建一个新的消费者对象
+func NewConsumer(connect ConnectConf, consumerQueueConf ConsumerQueueConf) *RabbitMQ {
+	return New(connect, ProducerRoutingConf{}, consumerQueueConf)
+}
+
 // MqConnect 链接rabbitMQ
 func (r *RabbitMQ) MqConnect() (*RabbitMQ, error) {
 	var err error
