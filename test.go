@@ -16,12 +16,10 @@ var connect = rabbitmqGo.ConnectConf{
 	Vhost:      "devices",
 	Port:       0,
 }
-
 var exPrdConf = rabbitmqGo.ProducerRoutingConf{
 	ExchangeName: "test-debug",
 	RoutingKey:   "debug-topic",
 }
-
 var exCsmConf = rabbitmqGo.ConsumerQueueConf{
 	ConsumerTag:  "test--miss--debug",
 	ExchangeName: "test-debug",
