@@ -13,7 +13,7 @@ var connect = rabbitmqGo.ConnectConf{
 	InstanceId: "",
 	AccessKey:  "",
 	SecretKey:  "",
-	Vhost:      "devices",
+	Vhost:      "primary",
 	Port:       0,
 }
 var exPrdConf = rabbitmqGo.ProducerRoutingConf{
@@ -30,30 +30,40 @@ var exCsmConf = rabbitmqGo.ConsumerQueueConf{
 
 func test() {
 	// 发送
-	msg := map[string]interface{}{
-		"Id":   5,
-		"Name": "test--miss",
-	}
-	rabbitmqGo.NewProducer(connect, exPrdConf).Producer(msg)
 	go runTime()
+	//for i := 1; i <= 10000; i++ {
+	//	runTime()
+	//	fmt.Printf("启动弟 %d\n", i)
+	//}
 
 	// 消费
-	rabbitmqGo.NewConsumer(connect, exCsmConf).Consumer(doFunc)
+	rabbitmqGo.NewConsumer(connect, exCsmConf).Consumer(doFunc1)
+	rabbitmqGo.NewConsumer(connect, exCsmConf).Consumer(doFunc2)
 
 	fmt.Println("9999999999--")
 	time.Sleep(10 * time.Minute)
 }
 
-func doFunc(msg string) error {
+func doFunc1(msg string) error {
 	var err error
-	fmt.Println("Consumer消费信息--", msg)
+	fmt.Println("Consumer消费信息--1111---", msg)
+	return err
+}
+
+func doFunc2(msg string) error {
+	var err error
+	fmt.Println("Consumer消费信息--2222---", msg)
 	return err
 }
 
 func runTime() {
-	C := time.Tick(1 * time.Second)
-	for range C {
+	cline := rabbitmqGo.New(connect, exPrdConf, exCsmConf)
+	st := time.Now().UnixMilli()
+	for i := 1; i <= 2; i++ {
 		msg := fmt.Sprintf(`miss-test--%d`, time.Now().UnixMilli())
-		rabbitmqGo.New(connect, exPrdConf, exCsmConf).Producer(msg)
+		cline.Producer(msg, -1)
 	}
+	et := time.Now().UnixMilli()
+	fmt.Println("耗时-----", et-st)
+	cline.MqClose()
 }
