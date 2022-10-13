@@ -85,10 +85,13 @@ func (r *RabbitMQ) MqClose() error {
 }
 
 // Producer 发送任务 送指定队列指定路由的生产者
-func (r *RabbitMQ) Producer(msg interface{}) error {
+// isMqClose 是否发送完消息即关闭链接 0关闭 -1不关闭（如不关闭开发者需注意手动调用关闭）
+func (r *RabbitMQ) Producer(msg interface{}, isMqClose int) error {
 	var err error
 	// 处理结束关闭链接
-	defer r.MqClose()
+	if isMqClose != -1 {
+		defer r.MqClose()
+	}
 	if err != nil {
 		return err
 	}
