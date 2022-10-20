@@ -60,5 +60,5 @@ rabbitmqGo.NewConsumer(connect, consumerQueueConf).Consumer(doFunc)
 ###  MqClose 关闭RabbitMQ连接
 #### 如果 Producer 发送消息 参数isMqClose为不自动关闭链接 进行链接复用  可手动执行MqClose
 ```go
-func (r *RabbitMQ) MqClose() error {}
+func MqClose()
 ```
