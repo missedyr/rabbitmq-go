@@ -103,7 +103,13 @@ func (r *RabbitMQ) Producer(msg interface{}, isMqClose int) error {
 			return err
 		}
 	}
-
+	//连接关闭,重新连接
+	if r.Connection.IsClosed() {
+		_, err = r.MqConnect()
+		if err != nil {
+			return err
+		}
+	}
 	// 注册交换机
 	// name:交换机名称,
 	// kind:交换机类型,
