@@ -3,8 +3,9 @@ package rabbitmqGo
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/streadway/amqp"
 	"sync"
+
+	"github.com/streadway/amqp"
 )
 
 // 定义全局变量,指针类型
@@ -104,7 +105,7 @@ func (r *RabbitMQ) Producer(msg interface{}, isMqClose int) error {
 		}
 	}
 	//连接关闭,重新连接
-	if r.Connection.IsClosed() {
+	if r.Connection == nil || r.Connection.IsClosed() {
 		_, err = r.MqConnect()
 		if err != nil {
 			return err
@@ -147,7 +148,13 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 			return
 		}
 	}
-
+	//连接关闭,重新连接
+	if r.Connection == nil || r.Connection.IsClosed() {
+		_, err := r.MqConnect()
+		if err != nil {
+			return
+		}
+	}
 	// 注册交换机
 	// name:交换机名称,
 	// kind:交换机类型,
