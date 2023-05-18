@@ -105,7 +105,7 @@ func (r *RabbitMQ) Producer(msg interface{}, isMqClose int) error {
 		}
 	}
 	//连接关闭,重新连接
-	if r.Connection.IsClosed() {
+	if r.Connection == nil || r.Connection.IsClosed() {
 		_, err = r.MqConnect()
 		if err != nil {
 			return err
@@ -149,7 +149,7 @@ func (r *RabbitMQ) Consumer(doFunc func(string) error) {
 		}
 	}
 	//连接关闭,重新连接
-	if r.Connection.IsClosed() {
+	if r.Connection == nil || r.Connection.IsClosed() {
 		_, err := r.MqConnect()
 		if err != nil {
 			return
